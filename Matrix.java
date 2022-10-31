@@ -13,7 +13,7 @@ public class Matrix {
 
         for (double[] i:matr) {
             for (double j:i) {
-                System.out.printf("%4.2f\t", j);
+                System.out.printf("%f\t", j);
             }
             System.out.print("\n");
         }
@@ -93,5 +93,114 @@ public class Matrix {
             }
         }
         return det;
+    }
+
+    Matrix advancedGauss() {
+        double[][] mat = matrix;
+        double[] b;
+        double k;
+        for (int currentIndex = 0; currentIndex < mat.length; currentIndex++) {
+            if (currentIndex - 1 >= 0) {
+                for (int i = currentIndex; i < mat.length; i++) {
+                    if (mat[currentIndex - 1][currentIndex - 1] == 0) {
+                        b = mat[currentIndex - 1];
+                        mat[currentIndex - 1] = mat[currentIndex];
+                        mat[currentIndex] = b;
+                        i--;
+                    } else if (mat[i][currentIndex - 1] != 0) {
+                        k = mat[currentIndex - 1][currentIndex - 1] / mat[i][currentIndex - 1] * -1;
+                        for (int j = currentIndex - 1; j < mat[0].length; j++) {
+                            mat[i][j] = k * mat[i][j] + mat[currentIndex - 1][j];
+                        }
+                    }
+                }
+            }
+            k = mat[currentIndex][currentIndex];
+            for (int j = currentIndex; j < mat[0].length; j++) {
+                if (mat[currentIndex][j] != 0) {
+                    mat[currentIndex][j] /= k;
+                }
+            }
+        }
+        return new Matrix(mat);
+    }
+
+    Matrix gauss() {
+        double[][] mat = matrix;
+        double[] b;
+        double k;
+        for (int currentIndex = 1; currentIndex < mat.length; currentIndex++) {
+            for (int i = currentIndex; i < mat.length; i++) {
+                if (mat[currentIndex - 1][currentIndex - 1] == 0) {
+                    b = mat[currentIndex - 1];
+                    mat[currentIndex - 1] = mat[currentIndex];
+                    mat[currentIndex] = b;
+                    i--;
+                } else if (mat[i][currentIndex - 1] != 0) {
+                    k = mat[currentIndex - 1][currentIndex - 1] / mat[i][currentIndex - 1] * -1;
+                    for (int j = currentIndex - 1; j < mat[0].length; j++) {
+                        mat[i][j] = k * mat[i][j] + mat[currentIndex - 1][j];
+                    }
+                }
+            }
+        }
+        return new Matrix(mat);
+    }
+
+    public static Matrix randomMatrix(int n, int m, double min, double max) {
+        double[][] mat = new double[n][m];
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                mat[i][j] = (int) (Math.random() * (max - min + 1) + min);
+            }
+        }
+        return new Matrix(mat);
+    }
+
+    public static void print3Matrix(Matrix a, Matrix b, Matrix c) {
+        double[][] amat, bmat, cmat;
+        amat = a.matrix;
+        bmat = b.matrix;
+        cmat = c.matrix;
+        for (double[] doubles : amat) {
+            for (int j = 0; j < amat[0].length; j++) {
+                System.out.printf("%.0f\t", doubles[j]);
+            }
+            System.out.print("\n");
+        }
+        for (double[] doubles : bmat) {
+            for (int t = 0; t < amat.length; t++) {
+                System.out.print("\t");
+            }
+            for (int j = 0; j < bmat[0].length; j++) {
+                System.out.printf("%.0f\t", doubles[j]);
+            }
+            System.out.print("\n");
+        }
+        for (double[] doubles : cmat) {
+            for (int t = 0; t < bmat.length + amat.length; t++) {
+                System.out.print("\t");
+            }
+            for (int j = 0; j < cmat[0].length; j++) {
+                System.out.printf("%.0f\t", doubles[j]);
+            }
+            System.out.print("\n");
+        }
+    }
+
+    double[] underDiagonal() {
+        double[][] mat = matrix;
+        int len = 0;
+        for (int i = mat.length - 1; i > 0; ) {
+            len += (i * 2 - 1);
+            i -= 2;
+        }
+        double[] res = new double[len];
+        for (int j = 0, n = 0; j < mat.length; j++) {
+            for (int i = j + 1; i < mat.length; i++) {
+                res[n++] = mat[i][j];
+            }
+        }
+        return res;
     }
 }
