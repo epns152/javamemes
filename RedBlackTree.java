@@ -19,12 +19,15 @@ public class RedBlackTree {
         tree.insertNode(13);
         tree.insertNode(16);
         tree.walk(tree.root);
-        System.out.println(tree.root.color);
-        System.out.println(tree.root.value);
-
-        System.out.println(tree.root.rightChild.value);
+        tree.deleteNode(15);
+        System.out.println();
+        tree.walk(tree.root);
+//        System.out.println(tree.root.color);
+//        System.out.println(tree.root.value);
 //
-//        System.out.println(tree.root.leftChild.color);
+//        System.out.println(tree.root.rightChild.value);
+//
+//        System.out.println(tree.root.rightChild.color);
 //        System.out.println(tree.root.leftChild.value);
 //
 //        System.out.println(tree.root.rightChild.color);
@@ -109,6 +112,7 @@ public class RedBlackTree {
                 }
             }
         }
+        root.color = true;
     }
 
     public void leftRotate(Node node) {
@@ -209,6 +213,10 @@ public class RedBlackTree {
                         color = yy.color;
                     }
                 }
+                if (color) {
+                    deleteFix(current);
+                }
+                break;
             }
 
 
@@ -219,7 +227,7 @@ public class RedBlackTree {
                 } else {
                     current = current.rightChild;
                 }
-            } else if (value < current.value) {
+            } else {
                 if (current.leftChild == null) {
                     System.out.println("cannot delete node");
                     break;
@@ -227,6 +235,60 @@ public class RedBlackTree {
                     current = current.leftChild;
                 }
             }
+        }
+    }
+
+    public void deleteFix(Node x) {
+        while (x.color && x != root) {
+            Node p = x.parent;
+            if (p.leftChild == x) {
+                Node w = p.rightChild;
+                if (!w.color) {
+                    w.color = true;
+                    p.color = false;
+                    leftRotate(p);
+                    p = x.parent;
+                    p.leftChild = w;
+                } else if (w.rightChild.color == w.leftChild.color && w.rightChild.color) {
+                    w.color = false;
+                    x = x.parent;
+                } else if (w.leftChild.color) {
+                    w.rightChild.color = true;
+                    w.color = false;
+                    rightRotate(w);
+                    p.leftChild = w;
+                } else {
+                    w.color = p.color;
+                    p.color = true;
+                    w.leftChild.color = true;
+                    leftRotate(p);
+                    root = x;
+                }
+            } else {
+                Node w = p.leftChild;
+                if (!w.color) {
+                    w.color = true;
+                    p.color = false;
+                    rightRotate(p);
+                    p = x.parent;
+                    p.leftChild = w;
+                } else if (w.rightChild.color == w.leftChild.color && w.rightChild.color) {
+                    w.color = false;
+                    x = x.parent;
+                } else if (w.leftChild.color) {
+                    w.rightChild.color = true;
+                    w.color = false;
+                    leftRotate(w);
+                    p.leftChild = w;
+                } else {
+                    w.color = p.color;
+                    p.color = true;
+                    w.leftChild.color = true;
+                    rightRotate(p);
+                    root = x;
+                }
+            }
+            x.color = true;
         }
     }
 }
